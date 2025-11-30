@@ -3,39 +3,1580 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roundcube Webmail - Connexion</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Roundcube Webmail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #1a1a1a;
+            --bg-darker: #0f0f0f;
+            --bg-sidebar: #2d2d2d;
+            --bg-hover: #3a3a3a;
+            --bg-active: #4a90e2;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #404040;
+            --blue-primary: #4a90e2;
+            --blue-dark: #357abd;
+            --sphere-gray: #6b6b6b;
+            --base-gray: #3a3a3a;
+            --base-blue: #4a90e2;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Login Page */
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-darker);
+        }
+
+        .login-container {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 20px;
+        }
+
+        .logo {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 40px;
+            transform-style: preserve-3d;
+        }
+
+        .logo-sphere {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 30% 30%, #8b8b8b, var(--sphere-gray));
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-base {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) perspective(200px) rotateX(20deg) rotateY(-30deg);
+            width: 80px;
+            height: 50px;
+            transform-style: preserve-3d;
+        }
+
+        .logo-base-top {
+            width: 80px;
+            height: 30px;
+            background-color: var(--base-gray);
+            transform: rotateX(90deg) translateZ(15px);
+            transform-origin: bottom;
+        }
+
+        .logo-base-front {
+            width: 80px;
+            height: 30px;
+            background-color: var(--base-blue);
+            transform: translateZ(15px);
+        }
+
+        .login-form {
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--blue-primary);
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--blue-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: var(--blue-dark);
+        }
+
+        .login-footer {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Dashboard & Admin Layout */
+        .dashboard-page,
+        .admin-page {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-sidebar);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .account-logo {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 15px;
+        }
+
+        .logo-sphere-small {
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 30% 30%, #8b8b8b, var(--sphere-gray));
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo-base-small {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) perspective(100px) rotateX(20deg) rotateY(-30deg);
+            width: 40px;
+            height: 25px;
+            transform-style: preserve-3d;
+        }
+
+        .logo-base-top-small {
+            width: 40px;
+            height: 15px;
+            background-color: var(--base-gray);
+            transform: rotateX(90deg) translateZ(7px);
+            transform-origin: bottom;
+        }
+
+        .logo-base-front-small {
+            width: 40px;
+            height: 15px;
+            background-color: var(--base-blue);
+            transform: translateZ(7px);
+        }
+
+        .account-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+
+        .account-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .compose-btn {
+            margin: 15px;
+            padding: 12px;
+            background-color: var(--blue-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .compose-btn:hover {
+            background-color: var(--blue-dark);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 10px 0;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .nav-item.active {
+            background-color: var(--bg-active);
+            color: white;
+        }
+
+        .nav-submenu {
+            padding-left: 20px;
+        }
+
+        .nav-submenu .nav-item {
+            padding-left: 50px;
+            font-size: 13px;
+        }
+
+        .nav-item .icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 10px 0;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-dark);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background-color: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border-color);
+            gap: 15px;
+        }
+
+        .toolbar-left,
+        .toolbar-center {
+            display: flex;
+            gap: 10px;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .toolbar-btn:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .toolbar-btn.primary {
+            background-color: var(--blue-primary);
+            color: white;
+        }
+
+        .toolbar-btn.primary:hover {
+            background-color: var(--blue-dark);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px 12px;
+            gap: 8px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            width: 200px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+        }
+
+        .search-bar .icon {
+            color: var(--text-secondary);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 100px;
+        }
+
+        .illustration {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            height: 150px;
+            transform-style: preserve-3d;
+        }
+
+        .illustration-sphere {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at 30% 30%, #8b8b8b, var(--sphere-gray));
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .illustration-base {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) perspective(300px) rotateX(20deg) rotateY(-30deg);
+            width: 120px;
+            height: 80px;
+            transform-style: preserve-3d;
+        }
+
+        .illustration-base-top {
+            width: 120px;
+            height: 50px;
+            background-color: var(--base-gray);
+            transform: rotateX(90deg) translateZ(25px);
+            transform-origin: bottom;
+        }
+
+        .illustration-base-front {
+            width: 120px;
+            height: 50px;
+            background-color: var(--base-blue);
+            transform: translateZ(25px);
+        }
+
+        /* Admin Styles */
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-table-container {
+            background-color: var(--bg-sidebar);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table thead {
+            background-color: var(--bg-darker);
+        }
+
+        .admin-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .admin-table tbody tr:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-settings {
+            background-color: var(--bg-sidebar);
+            padding: 30px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            font-size: 18px;
+        }
+
+        .setting-item {
+            margin-bottom: 20px;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .setting-item input[type="text"],
+        .setting-item input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .setting-item input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .save-settings-btn {
+            padding: 12px 24px;
+            background-color: var(--blue-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .save-settings-btn:hover {
+            background-color: var(--blue-dark);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--bg-sidebar);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--blue-primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-cancel,
+        .btn-save {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-cancel {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-cancel:hover {
+            background-color: var(--border-color);
+        }
+
+        .btn-save {
+            background-color: var(--blue-primary);
+            color: white;
+        }
+
+        .btn-save:hover {
+            background-color: var(--blue-dark);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--blue-primary);
+            cursor: pointer;
+            padding: 5px 10px;
+            margin: 0 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .action-btn.delete {
+            color: #e74c3c;
+        }
+
+        /* Hide pages by default */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .toolbar {
+                flex-wrap: wrap;
+            }
+            
+            .search-bar input {
+                width: 150px;
+            }
+        }
+    </style>
 </head>
-<body class="login-page">
-    <div class="login-container">
-        <div class="logo">
-            <div class="logo-sphere"></div>
-            <div class="logo-base">
-                <div class="logo-base-top"></div>
-                <div class="logo-base-front"></div>
-            </div>
-        </div>
-        
-        <form id="loginForm" class="login-form">
-            <div class="input-group">
-                <span class="input-icon">👤</span>
-                <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active login-page">
+        <div class="login-container">
+            <div class="logo">
+                <div class="logo-sphere"></div>
+                <div class="logo-base">
+                    <div class="logo-base-top"></div>
+                    <div class="logo-base-front"></div>
+                </div>
             </div>
             
-            <div class="input-group">
-                <span class="input-icon">🔒</span>
-                <input type="password" id="password" placeholder="Mot de passe" required>
-            </div>
+            <form id="loginForm" class="login-form">
+                <div class="input-group">
+                    <span class="input-icon">👤</span>
+                    <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+                </div>
+                
+                <div class="input-group">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="password" placeholder="Mot de passe" required>
+                </div>
+                
+                <button type="submit" class="login-button">CONNEXION</button>
+            </form>
             
-            <button type="submit" class="login-button">CONNEXION</button>
-        </form>
-        
-        <div class="login-footer">
-            <p>Roundcube Webmail</p>
+            <div class="login-footer">
+                <p>Roundcube Webmail</p>
+            </div>
         </div>
     </div>
-    
-    <script src="js/app.js"></script>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="page dashboard-page">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="account-logo">
+                    <div class="logo-sphere-small"></div>
+                    <div class="logo-base-small">
+                        <div class="logo-base-top-small"></div>
+                        <div class="logo-base-front-small"></div>
+                    </div>
+                </div>
+                <div class="account-info">
+                    <span id="userEmail" class="user-email">user@example.com</span>
+                    <button class="account-menu-btn">⋮</button>
+                </div>
+            </div>
+            
+            <button class="compose-btn">
+                <span class="icon">✏️</span>
+                <span>Rédiger</span>
+            </button>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-item active" data-page="email">
+                        <span class="icon">✉️</span>
+                        <span>Courriel</span>
+                    </div>
+                    <div class="nav-submenu" id="emailSubmenu">
+                        <div class="nav-item active" data-folder="inbox">
+                            <span class="icon">📥</span>
+                            <span>Boîte de réception</span>
+                        </div>
+                        <div class="nav-item" data-folder="drafts">
+                            <span class="icon">📝</span>
+                            <span>Brouillons</span>
+                        </div>
+                        <div class="nav-item" data-folder="sent">
+                            <span class="icon">✈️</span>
+                            <span>Envoyés</span>
+                        </div>
+                        <div class="nav-item" data-folder="spam">
+                            <span class="icon">🔥</span>
+                            <span>Pourriels</span>
+                        </div>
+                        <div class="nav-item" data-folder="trash">
+                            <span class="icon">🗑️</span>
+                            <span>Corbeille</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-item" data-page="contacts">
+                    <span class="icon">👥</span>
+                    <span>Contacts</span>
+                </div>
+                
+                <div class="nav-item" data-page="settings">
+                    <span class="icon">⚙️</span>
+                    <span>Paramètres</span>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="nav-item" id="lightModeBtn">
+                    <span class="icon">☀️</span>
+                    <span>Mode clair</span>
+                </div>
+                <div class="nav-item" data-page="about">
+                    <span class="icon">❓</span>
+                    <span>À propos de</span>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="toolbar-btn" title="Sélectionner">
+                        <span class="icon">🖱️</span>
+                    </button>
+                    <button class="toolbar-btn" title="Fils">
+                        <span class="icon">💬</span>
+                    </button>
+                    <button class="toolbar-btn" title="Options">
+                        <span class="icon">☰</span>
+                    </button>
+                    <button class="toolbar-btn" title="Actualiser">
+                        <span class="icon">🔄</span>
+                    </button>
+                </div>
+                
+                <div class="toolbar-center">
+                    <button class="toolbar-btn" title="Répondre">
+                        <span class="icon">↩️</span>
+                    </button>
+                    <button class="toolbar-btn" title="Répondre à tous">
+                        <span class="icon">↩️↩️</span>
+                    </button>
+                    <button class="toolbar-btn" title="Transférer">
+                        <span class="icon">↪️</span>
+                    </button>
+                    <button class="toolbar-btn" title="Supprimer">
+                        <span class="icon">🗑️</span>
+                    </button>
+                </div>
+                
+                <div class="toolbar-right">
+                    <div class="search-bar">
+                        <span class="icon">🔍</span>
+                        <input type="text" placeholder="Recherche..." id="searchInput">
+                    </div>
+                    <button class="toolbar-btn" title="Filtres">
+                        <span class="icon">✉️</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="content-area" id="contentArea">
+                <div class="empty-state">
+                    <p>La liste est vide.</p>
+                </div>
+                <div class="illustration">
+                    <div class="illustration-sphere"></div>
+                    <div class="illustration-base">
+                        <div class="illustration-base-top"></div>
+                        <div class="illustration-base-front"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Page -->
+    <div id="adminPage" class="page admin-page">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="account-logo">
+                    <div class="logo-sphere-small"></div>
+                    <div class="logo-base-small">
+                        <div class="logo-base-top-small"></div>
+                        <div class="logo-base-front-small"></div>
+                    </div>
+                </div>
+                <div class="account-info">
+                    <span class="user-email">Administration</span>
+                    <button class="account-menu-btn">⋮</button>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-admin-page="users">
+                    <span class="icon">👥</span>
+                    <span>Utilisateurs</span>
+                </div>
+                <div class="nav-item" data-admin-page="emails">
+                    <span class="icon">✉️</span>
+                    <span>Emails</span>
+                </div>
+                <div class="nav-item" data-admin-page="settings">
+                    <span class="icon">⚙️</span>
+                    <span>Paramètres</span>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="nav-item" id="backToWebmail">
+                    <span class="icon">←</span>
+                    <span>Retour au Webmail</span>
+                </div>
+                <div class="nav-item" id="logoutBtn">
+                    <span class="icon">🚪</span>
+                    <span>Déconnexion</span>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <h2 id="adminPageTitle">Gestion des Utilisateurs</h2>
+                </div>
+                
+                <div class="toolbar-right">
+                    <button class="toolbar-btn primary" id="addUserBtn">
+                        <span class="icon">➕</span>
+                        <span>Ajouter un utilisateur</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="content-area" id="adminContentArea">
+                <div id="usersPanel" class="admin-panel active">
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom d'utilisateur</th>
+                                    <th>Email</th>
+                                    <th>Mot de passe</th>
+                                    <th>Date de création</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="emailsPanel" class="admin-panel">
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>De</th>
+                                    <th>À</th>
+                                    <th>Sujet</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emailsTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="settingsPanel" class="admin-panel">
+                    <div class="admin-settings">
+                        <div class="settings-section">
+                            <h3>Configuration générale</h3>
+                            <div class="setting-item">
+                                <label>Nom du serveur</label>
+                                <input type="text" id="serverName" value="mail.example.com">
+                            </div>
+                            <div class="setting-item">
+                                <label>Port SMTP</label>
+                                <input type="number" id="smtpPort" value="587">
+                            </div>
+                            <div class="setting-item">
+                                <label>Port IMAP</label>
+                                <input type="number" id="imapPort" value="993">
+                            </div>
+                        </div>
+                        
+                        <div class="settings-section">
+                            <h3>Sécurité</h3>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="requireStrongPassword">
+                                    Exiger un mot de passe fort
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="enable2FA">
+                                    Activer l'authentification à deux facteurs
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button class="save-settings-btn">Enregistrer les paramètres</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Add/Edit User -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Ajouter un utilisateur</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    <div class="form-group">
+                        <label>Nom d'utilisateur</label>
+                        <input type="text" id="modalUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="modalEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="modalPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmer le mot de passe</label>
+                        <input type="password" id="modalPasswordConfirm" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel">Annuler</button>
+                        <button type="submit" class="btn-save">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class StorageManager {
+            static init() {
+                if (!localStorage.getItem('users')) {
+                    const defaultUsers = [
+                        {
+                            id: 1,
+                            username: 'admin',
+                            email: 'admin@example.com',
+                            password: 'admin123',
+                            createdAt: new Date().toISOString()
+                        }
+                    ];
+                    localStorage.setItem('users', JSON.stringify(defaultUsers));
+                }
+                
+                if (!localStorage.getItem('emails')) {
+                    localStorage.setItem('emails', JSON.stringify([]));
+                }
+                
+                if (!localStorage.getItem('currentUser')) {
+                    localStorage.setItem('currentUser', null);
+                }
+            }
+            
+            static getUsers() {
+                return JSON.parse(localStorage.getItem('users') || '[]');
+            }
+            
+            static saveUsers(users) {
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            static getEmails() {
+                return JSON.parse(localStorage.getItem('emails') || '[]');
+            }
+            
+            static saveEmails(emails) {
+                localStorage.setItem('emails', JSON.stringify(emails));
+            }
+            
+            static getCurrentUser() {
+                const userId = localStorage.getItem('currentUser');
+                if (!userId) return null;
+                const users = this.getUsers();
+                return users.find(u => u.id == userId) || null;
+            }
+            
+            static setCurrentUser(userId) {
+                localStorage.setItem('currentUser', userId);
+            }
+            
+            static logout() {
+                localStorage.setItem('currentUser', null);
+            }
+        }
+
+        StorageManager.init();
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const users = StorageManager.getUsers();
+            const user = users.find(u => 
+                (u.username === username || u.email === username) && 
+                u.password === password
+            );
+            
+            if (user) {
+                StorageManager.setCurrentUser(user.id);
+                if (user.username === 'admin') {
+                    showPage('adminPage');
+                    initAdmin();
+                } else {
+                    showPage('dashboardPage');
+                    initDashboard();
+                }
+            } else {
+                alert('Nom d\'utilisateur ou mot de passe incorrect');
+            }
+        });
+
+        // Dashboard functionality
+        function initDashboard() {
+            const currentUser = StorageManager.getCurrentUser();
+            if (!currentUser) {
+                showPage('loginPage');
+                return;
+            }
+
+            document.getElementById('userEmail').textContent = currentUser.email;
+
+            const navItems = document.querySelectorAll('#dashboardPage .nav-item[data-page]');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.getAttribute('data-page');
+                    handlePageNavigation(page);
+                });
+            });
+
+            const folderItems = document.querySelectorAll('#dashboardPage .nav-item[data-folder]');
+            folderItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const folder = this.getAttribute('data-folder');
+                    handleFolderNavigation(folder);
+                });
+            });
+
+            const lightModeBtn = document.getElementById('lightModeBtn');
+            if (lightModeBtn) {
+                lightModeBtn.addEventListener('click', function() {
+                    alert('Mode clair non implémenté dans cette version');
+                });
+            }
+
+            const composeBtn = document.querySelector('#dashboardPage .compose-btn');
+            if (composeBtn) {
+                composeBtn.addEventListener('click', function() {
+                    alert('Fonctionnalité de rédaction à venir');
+                });
+            }
+
+            loadFolder('inbox');
+        }
+
+        function handlePageNavigation(page) {
+            switch(page) {
+                case 'contacts':
+                    showContacts();
+                    break;
+                case 'settings':
+                    showSettings();
+                    break;
+                case 'about':
+                    showAbout();
+                    break;
+                default:
+                    loadFolder('inbox');
+            }
+        }
+
+        function handleFolderNavigation(folder) {
+            document.querySelectorAll('#dashboardPage .nav-item[data-folder]').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`#dashboardPage .nav-item[data-folder="${folder}"]`).classList.add('active');
+            loadFolder(folder);
+        }
+
+        function loadFolder(folder) {
+            const contentArea = document.getElementById('contentArea');
+            const emails = StorageManager.getEmails();
+            
+            let folderEmails = [];
+            switch(folder) {
+                case 'inbox':
+                    folderEmails = emails.filter(e => e.folder === 'inbox' || !e.folder);
+                    break;
+                case 'sent':
+                    folderEmails = emails.filter(e => e.folder === 'sent');
+                    break;
+                case 'drafts':
+                    folderEmails = emails.filter(e => e.folder === 'drafts');
+                    break;
+                case 'spam':
+                    folderEmails = emails.filter(e => e.folder === 'spam');
+                    break;
+                case 'trash':
+                    folderEmails = emails.filter(e => e.folder === 'trash');
+                    break;
+            }
+            
+            if (folderEmails.length === 0) {
+                contentArea.innerHTML = `
+                    <div class="empty-state">
+                        <p>La liste est vide.</p>
+                    </div>
+                    <div class="illustration">
+                        <div class="illustration-sphere"></div>
+                        <div class="illustration-base">
+                            <div class="illustration-base-top"></div>
+                            <div class="illustration-base-front"></div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const emailsHTML = folderEmails.map(email => `
+                    <div class="email-item" style="padding: 15px; border-bottom: 1px solid var(--border-color); cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="color: var(--text-primary);">${email.from}</strong>
+                                <p style="color: var(--text-secondary); margin-top: 5px;">${email.subject}</p>
+                            </div>
+                            <span style="color: var(--text-secondary); font-size: 12px;">${new Date(email.date).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                contentArea.innerHTML = `
+                    <div style="background-color: var(--bg-sidebar); border-radius: 4px; border: 1px solid var(--border-color);">
+                        ${emailsHTML}
+                    </div>
+                `;
+            }
+        }
+
+        function showContacts() {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `
+                <div style="text-align: center; margin-top: 100px;">
+                    <h2 style="color: var(--text-primary); margin-bottom: 20px;">Contacts</h2>
+                    <p style="color: var(--text-secondary);">La liste est vide. Utiliser le bouton Créer pour ajouter un nouvel enregistrement.</p>
+                </div>
+                <div class="illustration">
+                    <div class="illustration-sphere"></div>
+                    <div class="illustration-base">
+                        <div class="illustration-base-top"></div>
+                        <div class="illustration-base-front"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showSettings() {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `
+                <div style="background-color: var(--bg-sidebar); padding: 30px; border-radius: 4px; border: 1px solid var(--border-color);">
+                    <h2 style="color: var(--text-primary); margin-bottom: 30px;">Paramètres</h2>
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: var(--text-primary); margin-bottom: 15px;">Préférences</h3>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="padding: 15px; background-color: var(--bg-dark); border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color);">
+                                <span style="color: var(--text-primary);">🖥️ Interface utilisateur</span>
+                            </div>
+                            <div style="padding: 15px; background-color: var(--bg-dark); border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color);">
+                                <span style="color: var(--text-primary);">✉️ Vue de la boîte de courriel</span>
+                            </div>
+                            <div style="padding: 15px; background-color: var(--bg-dark); border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color);">
+                                <span style="color: var(--text-primary);">📄 Affichage des courriels</span>
+                            </div>
+                            <div style="padding: 15px; background-color: var(--bg-dark); border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color);">
+                                <span style="color: var(--text-primary);">✈️ Rédaction de courriels</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showAbout() {
+            alert('Roundcube Webmail\nVersion 1.0.0');
+        }
+
+        // Admin functionality
+        function initAdmin() {
+            const currentUser = StorageManager.getCurrentUser();
+            
+            if (!currentUser || currentUser.username !== 'admin') {
+                alert('Accès refusé. Vous devez être administrateur.');
+                showPage('loginPage');
+                return;
+            }
+
+            const navItems = document.querySelectorAll('#adminPage .nav-item[data-admin-page]');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.getAttribute('data-admin-page');
+                    switchAdminPage(page);
+                });
+            });
+
+            const backBtn = document.getElementById('backToWebmail');
+            if (backBtn) {
+                backBtn.addEventListener('click', function() {
+                    showPage('dashboardPage');
+                    initDashboard();
+                });
+            }
+
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    StorageManager.logout();
+                    showPage('loginPage');
+                });
+            }
+
+            const addUserBtn = document.getElementById('addUserBtn');
+            if (addUserBtn) {
+                addUserBtn.addEventListener('click', function() {
+                    openUserModal();
+                });
+            }
+
+            const modal = document.getElementById('userModal');
+            const modalClose = document.querySelector('.modal-close');
+            const cancelBtn = document.querySelector('.btn-cancel');
+            
+            if (modalClose) {
+                modalClose.addEventListener('click', closeUserModal);
+            }
+            
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', closeUserModal);
+            }
+
+            const userForm = document.getElementById('userForm');
+            if (userForm) {
+                userForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveUser();
+                });
+            }
+
+            loadUsers();
+        }
+
+        function switchAdminPage(page) {
+            document.querySelectorAll('#adminPage .nav-item[data-admin-page]').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`#adminPage .nav-item[data-admin-page="${page}"]`).classList.add('active');
+            
+            document.querySelectorAll('.admin-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            const titles = {
+                'users': 'Gestion des Utilisateurs',
+                'emails': 'Gestion des Emails',
+                'settings': 'Paramètres'
+            };
+            document.getElementById('adminPageTitle').textContent = titles[page] || 'Administration';
+            
+            switch(page) {
+                case 'users':
+                    document.getElementById('usersPanel').classList.add('active');
+                    loadUsers();
+                    break;
+                case 'emails':
+                    document.getElementById('emailsPanel').classList.add('active');
+                    loadEmails();
+                    break;
+                case 'settings':
+                    document.getElementById('settingsPanel').classList.add('active');
+                    break;
+            }
+        }
+
+        function loadUsers() {
+            const users = StorageManager.getUsers();
+            const tbody = document.getElementById('usersTableBody');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-secondary);">Aucun utilisateur</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${'*'.repeat(user.password.length)}</td>
+                    <td>${new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="action-btn" onclick="editUser(${user.id})">Modifier</button>
+                        <button class="action-btn delete" onclick="deleteUser(${user.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadEmails() {
+            const emails = StorageManager.getEmails();
+            const tbody = document.getElementById('emailsTableBody');
+            
+            if (emails.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-secondary);">Aucun email</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = emails.map(email => `
+                <tr>
+                    <td>${email.id || '-'}</td>
+                    <td>${email.from}</td>
+                    <td>${email.to}</td>
+                    <td>${email.subject}</td>
+                    <td>${new Date(email.date).toLocaleDateString()}</td>
+                    <td>
+                        <button class="action-btn delete" onclick="deleteEmail(${email.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openUserModal(userId = null) {
+            const modal = document.getElementById('userModal');
+            const form = document.getElementById('userForm');
+            const title = document.getElementById('modalTitle');
+            
+            if (userId) {
+                const users = StorageManager.getUsers();
+                const user = users.find(u => u.id == userId);
+                if (user) {
+                    title.textContent = 'Modifier un utilisateur';
+                    document.getElementById('userId').value = user.id;
+                    document.getElementById('modalUsername').value = user.username;
+                    document.getElementById('modalEmail').value = user.email;
+                    document.getElementById('modalPassword').value = '';
+                    document.getElementById('modalPasswordConfirm').value = '';
+                    document.getElementById('modalPassword').required = false;
+                    document.getElementById('modalPasswordConfirm').required = false;
+                }
+            } else {
+                title.textContent = 'Ajouter un utilisateur';
+                form.reset();
+                document.getElementById('userId').value = '';
+                document.getElementById('modalPassword').required = true;
+                document.getElementById('modalPasswordConfirm').required = true;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeUserModal() {
+            const modal = document.getElementById('userModal');
+            modal.classList.remove('active');
+            document.getElementById('userForm').reset();
+        }
+
+        function saveUser() {
+            const userId = document.getElementById('userId').value;
+            const username = document.getElementById('modalUsername').value;
+            const email = document.getElementById('modalEmail').value;
+            const password = document.getElementById('modalPassword').value;
+            const passwordConfirm = document.getElementById('modalPasswordConfirm').value;
+            
+            if (password && password !== passwordConfirm) {
+                alert('Les mots de passe ne correspondent pas');
+                return;
+            }
+            
+            const users = StorageManager.getUsers();
+            
+            if (userId) {
+                const userIndex = users.findIndex(u => u.id == userId);
+                if (userIndex !== -1) {
+                    users[userIndex].username = username;
+                    users[userIndex].email = email;
+                    if (password) {
+                        users[userIndex].password = password;
+                    }
+                }
+            } else {
+                const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+                users.push({
+                    id: newId,
+                    username: username,
+                    email: email,
+                    password: password,
+                    createdAt: new Date().toISOString()
+                });
+            }
+            
+            StorageManager.saveUsers(users);
+            loadUsers();
+            closeUserModal();
+        }
+
+        function editUser(userId) {
+            openUserModal(userId);
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+                const users = StorageManager.getUsers();
+                const filteredUsers = users.filter(u => u.id != userId);
+                StorageManager.saveUsers(filteredUsers);
+                loadUsers();
+            }
+        }
+
+        function deleteEmail(emailId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet email ?')) {
+                const emails = StorageManager.getEmails();
+                const filteredEmails = emails.filter(e => e.id != emailId);
+                StorageManager.saveEmails(filteredEmails);
+                loadEmails();
+            }
+        }
+
+        window.editUser = editUser;
+        window.deleteUser = deleteUser;
+        window.deleteEmail = deleteEmail;
+
+        // Check if user is already logged in
+        const currentUser = StorageManager.getCurrentUser();
+        if (currentUser) {
+            if (currentUser.username === 'admin') {
+                showPage('adminPage');
+                initAdmin();
+            } else {
+                showPage('dashboardPage');
+                initDashboard();
+            }
+        } else {
+            showPage('loginPage');
+        }
+    </script>
 </body>
 </html>
-

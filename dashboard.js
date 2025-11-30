@@ -176,3 +176,4 @@ function showAbout() {
     alert('Roundcube Webmail\nVersion 1.0.0');
 }
 
+
