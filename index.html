@@ -742,7 +742,7 @@
                     <input type="password" id="password" placeholder="Mot de passe" required>
                 </div>
                 
-                <button type="submit" class="login-button">CONNEXION</button>
+                <button type="submit" class="login-button" id="loginButton">CONNEXION</button>
             </form>
             
             <div class="login-footer">
@@ -1124,11 +1124,14 @@
         }
 
         // Login functionality
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
+        function handleLogin() {
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                alert('Veuillez remplir tous les champs');
+                return false;
+            }
             
             const users = StorageManager.getUsers();
             const user = users.find(u => 
@@ -1145,10 +1148,32 @@
                     showPage('dashboardPage');
                     initDashboard();
                 }
+                return true;
             } else {
                 alert('Nom d\'utilisateur ou mot de passe incorrect');
+                return false;
             }
-        });
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleLogin();
+                return false;
+            });
+        }
+
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) {
+            loginButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleLogin();
+                return false;
+            });
+        }
 
         // Dashboard functionality
         function initDashboard() {
@@ -1564,18 +1589,27 @@
         window.deleteUser = deleteUser;
         window.deleteEmail = deleteEmail;
 
-        // Check if user is already logged in
-        const currentUser = StorageManager.getCurrentUser();
-        if (currentUser) {
-            if (currentUser.username === 'admin') {
-                showPage('adminPage');
-                initAdmin();
-            } else {
-                showPage('dashboardPage');
-                initDashboard();
-            }
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
         } else {
-            showPage('loginPage');
+            initApp();
+        }
+
+        function initApp() {
+            // Check if user is already logged in
+            const currentUser = StorageManager.getCurrentUser();
+            if (currentUser) {
+                if (currentUser.username === 'admin') {
+                    showPage('adminPage');
+                    initAdmin();
+                } else {
+                    showPage('dashboardPage');
+                    initDashboard();
+                }
+            } else {
+                showPage('loginPage');
+            }
         }
     </script>
 </body>
