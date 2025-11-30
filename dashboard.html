@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roundcube Webmail - Boîte de réception</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dashboard-page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="account-logo">
+                <div class="logo-sphere-small"></div>
+                <div class="logo-base-small">
+                    <div class="logo-base-top-small"></div>
+                    <div class="logo-base-front-small"></div>
+                </div>
+            </div>
+            <div class="account-info">
+                <span id="userEmail" class="user-email">user@example.com</span>
+                <button class="account-menu-btn">⋮</button>
+            </div>
+        </div>
+        
+        <button class="compose-btn">
+            <span class="icon">✏️</span>
+            <span>Rédiger</span>
+        </button>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-item active" data-page="email">
+                    <span class="icon">✉️</span>
+                    <span>Courriel</span>
+                </div>
+                <div class="nav-submenu" id="emailSubmenu">
+                    <div class="nav-item active" data-folder="inbox">
+                        <span class="icon">📥</span>
+                        <span>Boîte de réception</span>
+                    </div>
+                    <div class="nav-item" data-folder="drafts">
+                        <span class="icon">📝</span>
+                        <span>Brouillons</span>
+                    </div>
+                    <div class="nav-item" data-folder="sent">
+                        <span class="icon">✈️</span>
+                        <span>Envoyés</span>
+                    </div>
+                    <div class="nav-item" data-folder="spam">
+                        <span class="icon">🔥</span>
+                        <span>Pourriels</span>
+                    </div>
+                    <div class="nav-item" data-folder="trash">
+                        <span class="icon">🗑️</span>
+                        <span>Corbeille</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-item" data-page="contacts">
+                <span class="icon">👥</span>
+                <span>Contacts</span>
+            </div>
+            
+            <div class="nav-item" data-page="settings">
+                <span class="icon">⚙️</span>
+                <span>Paramètres</span>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="nav-item" id="lightModeBtn">
+                <span class="icon">☀️</span>
+                <span>Mode clair</span>
+            </div>
+            <div class="nav-item" data-page="about">
+                <span class="icon">❓</span>
+                <span>À propos de</span>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <button class="toolbar-btn" title="Sélectionner">
+                    <span class="icon">🖱️</span>
+                </button>
+                <button class="toolbar-btn" title="Fils">
+                    <span class="icon">💬</span>
+                </button>
+                <button class="toolbar-btn" title="Options">
+                    <span class="icon">☰</span>
+                </button>
+                <button class="toolbar-btn" title="Actualiser">
+                    <span class="icon">🔄</span>
+                </button>
+            </div>
+            
+            <div class="toolbar-center">
+                <button class="toolbar-btn" title="Répondre">
+                    <span class="icon">↩️</span>
+                </button>
+                <button class="toolbar-btn" title="Répondre à tous">
+                    <span class="icon">↩️↩️</span>
+                </button>
+                <button class="toolbar-btn" title="Transférer">
+                    <span class="icon">↪️</span>
+                </button>
+                <button class="toolbar-btn" title="Supprimer">
+                    <span class="icon">🗑️</span>
+                </button>
+            </div>
+            
+            <div class="toolbar-right">
+                <div class="search-bar">
+                    <span class="icon">🔍</span>
+                    <input type="text" placeholder="Recherche..." id="searchInput">
+                </div>
+                <button class="toolbar-btn" title="Filtres">
+                    <span class="icon">✉️</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content-area" id="contentArea">
+            <div class="empty-state">
+                <p>La liste est vide.</p>
+            </div>
+            <div class="illustration">
+                <div class="illustration-sphere"></div>
+                <div class="illustration-base">
+                    <div class="illustration-base-top"></div>
+                    <div class="illustration-base-front"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
+

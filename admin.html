@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Roundcube Webmail</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="account-logo">
+                <div class="logo-sphere-small"></div>
+                <div class="logo-base-small">
+                    <div class="logo-base-top-small"></div>
+                    <div class="logo-base-front-small"></div>
+                </div>
+            </div>
+            <div class="account-info">
+                <span class="user-email">Administration</span>
+                <button class="account-menu-btn">⋮</button>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-item active" data-admin-page="users">
+                <span class="icon">👥</span>
+                <span>Utilisateurs</span>
+            </div>
+            <div class="nav-item" data-admin-page="emails">
+                <span class="icon">✉️</span>
+                <span>Emails</span>
+            </div>
+            <div class="nav-item" data-admin-page="settings">
+                <span class="icon">⚙️</span>
+                <span>Paramètres</span>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="nav-item" id="backToWebmail">
+                <span class="icon">←</span>
+                <span>Retour au Webmail</span>
+            </div>
+            <div class="nav-item" id="logoutBtn">
+                <span class="icon">🚪</span>
+                <span>Déconnexion</span>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <h2 id="adminPageTitle">Gestion des Utilisateurs</h2>
+            </div>
+            
+            <div class="toolbar-right">
+                <button class="toolbar-btn primary" id="addUserBtn">
+                    <span class="icon">➕</span>
+                    <span>Ajouter un utilisateur</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content-area" id="adminContentArea">
+            <!-- Users Management -->
+            <div id="usersPanel" class="admin-panel active">
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom d'utilisateur</th>
+                                <th>Email</th>
+                                <th>Mot de passe</th>
+                                <th>Date de création</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Emails Management -->
+            <div id="emailsPanel" class="admin-panel">
+                <div class="admin-table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>De</th>
+                                <th>À</th>
+                                <th>Sujet</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="emailsTableBody">
+                            <!-- Emails will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Settings Panel -->
+            <div id="settingsPanel" class="admin-panel">
+                <div class="admin-settings">
+                    <div class="settings-section">
+                        <h3>Configuration générale</h3>
+                        <div class="setting-item">
+                            <label>Nom du serveur</label>
+                            <input type="text" id="serverName" value="mail.example.com">
+                        </div>
+                        <div class="setting-item">
+                            <label>Port SMTP</label>
+                            <input type="number" id="smtpPort" value="587">
+                        </div>
+                        <div class="setting-item">
+                            <label>Port IMAP</label>
+                            <input type="number" id="imapPort" value="993">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h3>Sécurité</h3>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="requireStrongPassword">
+                                Exiger un mot de passe fort
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="enable2FA">
+                                Activer l'authentification à deux facteurs
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="save-settings-btn">Enregistrer les paramètres</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal for Add/Edit User -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Ajouter un utilisateur</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    <div class="form-group">
+                        <label>Nom d'utilisateur</label>
+                        <input type="text" id="modalUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="modalEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="modalPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmer le mot de passe</label>
+                        <input type="password" id="modalPasswordConfirm" required>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel">Annuler</button>
+                        <button type="submit" class="btn-save">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
+
